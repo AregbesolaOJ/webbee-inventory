@@ -1,20 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
+import EditScreenInfo from '../../components/EditScreenInfo';
 
-export default function ModalScreen() {
+const Dashboard = ({ ...props }): JSX.Element => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
+      <Text style={styles.title}>Dashboard Screen</Text>
       <View style={styles.separator} />
-      <EditScreenInfo path='app/modal.tsx' />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
   );
-}
+};
+
+export default Dashboard;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,9 +1,17 @@
+import { FontAwesome } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
+import EditScreenInfo from '../../components/EditScreenInfo';
 
-export default function ModalScreen() {
+const HeaderIcon = (props: {
+  name: React.ComponentProps<typeof FontAwesome>['name'];
+  color: string;
+}) => {
+  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+};
+
+const ManageCategories = ({ ...props }): JSX.Element => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Modal</Text>
@@ -14,7 +22,9 @@ export default function ModalScreen() {
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
   );
-}
+};
+
+export default ManageCategories;
 
 const styles = StyleSheet.create({
   container: {

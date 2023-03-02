@@ -1,9 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
+import EditScreenInfo from '../../components/EditScreenInfo';
+import { ScreenProps } from '../../navigations/types';
 
-export default function ModalScreen() {
+const Category = ({ route, ...props }: ScreenProps): JSX.Element => {
+  const params = route?.params;
+  console.log({ params });
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Modal</Text>
@@ -14,7 +17,9 @@ export default function ModalScreen() {
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
   );
-}
+};
+
+export default Category;
 
 const styles = StyleSheet.create({
   container: {
