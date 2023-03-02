@@ -1,44 +1,63 @@
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { Button } from '../../components/Button';
+
+import { ScreenProps } from '../../navigations/types';
+import { useAppSelector } from '../../reduxStore/hooks';
+import { isIos } from '../../utils';
+import { Fonts, GlobalStyles, heightScale, Helpers } from '../../styles';
 import { FontAwesome } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Text, View } from 'react-native';
 
-import EditScreenInfo from '../../components/EditScreenInfo';
+const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
+  const storeCategories = useAppSelector((state) => state.categories);
 
-const HeaderIcon = (props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) => {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-};
-
-const ManageCategories = ({ ...props }): JSX.Element => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
-      <View style={styles.separator} />
-      <EditScreenInfo path='app/modal.tsx' />
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-    </View>
+    <KeyboardAvoidingView
+      behavior={isIos() ? 'padding' : undefined}
+      keyboardVerticalOffset={isIos() ? -5 : 0}
+      enabled
+      style={Helpers.fill}
+    >
+      <View
+        style={[
+          GlobalStyles.container,
+          GlobalStyles.layoutSection,
+          Helpers.fillCol,
+        ]}
+      >
+        {!storeCategories?.length ? (
+          <View style={Helpers.fillCenter}>
+            <Text style={[Fonts.caption4, GlobalStyles.italic]}>
+              No Categories found!
+            </Text>
+          </View>
+        ) : (
+          <ScrollView
+            contentContainerStyle={[
+              { flexGrow: 1, paddingTop: heightScale(25) },
+            ]}
+            style={Helpers.fill}
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={GlobalStyles.title}>Manage Categories Screen</Text>
+          </ScrollView>
+        )}
+        <Button
+          label='Add New Category'
+          onPress={() => navigation.navigate('ManageCategories')}
+          buttonStyle={{
+            marginVertical: heightScale(25),
+          }}
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export default ManageCategories;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

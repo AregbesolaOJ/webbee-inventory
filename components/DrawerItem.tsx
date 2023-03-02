@@ -10,6 +10,7 @@ interface Props {
   onPress?: () => void;
   icon: string;
 }
+
 export const CustomDrawerItem = ({
   label,
   isFocused,

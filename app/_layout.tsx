@@ -4,8 +4,11 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { Provider } from 'react-redux';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import { store, persistor } from '../reduxStore';
+import { isIos } from '../utils';
+import { StatusBar } from 'expo-status-bar';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -43,10 +46,15 @@ function RootLayoutNav() {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <Stack>
-          <Stack.Screen name='(drawer)' options={{ headerShown: false }} />
-          <Stack.Screen name='modal' options={{ presentation: 'modal' }} />
-        </Stack>
+        <PaperProvider>
+          {/* Use a light status bar on iOS to account for the black space above the modal */}
+          <StatusBar style={isIos() ? 'light' : 'auto'} />
+
+          <Stack>
+            <Stack.Screen name='(drawer)' options={{ headerShown: false }} />
+            <Stack.Screen name='modal' options={{ presentation: 'modal' }} />
+          </Stack>
+        </PaperProvider>
       </PersistGate>
     </Provider>
   );
