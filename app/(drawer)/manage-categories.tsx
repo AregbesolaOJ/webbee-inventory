@@ -1,3 +1,4 @@
+import { useCallback, useRef } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -7,15 +8,145 @@ import {
   View,
 } from 'react-native';
 import { Button } from '../../components/Button';
-
 import { ScreenProps } from '../../navigations/types';
-import { useAppSelector } from '../../reduxStore/hooks';
-import { isIos } from '../../utils';
-import { Fonts, GlobalStyles, heightScale, Helpers } from '../../styles';
-import { FontAwesome } from '@expo/vector-icons';
+import { useAppDispatch, useAppSelector } from '../../reduxStore/hooks';
+import { isIos, machineCategory, uuid } from '../../utils';
+import {
+  Fonts,
+  GlobalStyles,
+  heightScale,
+  Helpers,
+  Metrics,
+} from '../../styles';
+import { CategoryConfig } from '../../components';
+import { addCategoryAction, updateCategoriesAction } from '../../reduxStore';
 
 const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
   const storeCategories = useAppSelector((state) => state.categories);
+
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  const dispatch = useAppDispatch();
+  const triggerAddNewCategory = useCallback(() => {
+    const newCategory = {
+      ...machineCategory,
+    };
+    newCategory.categoryId = uuid();
+    newCategory.fields[0].id = uuid();
+    dispatch(addCategoryAction(newCategory));
+  }, [dispatch, machineCategory]);
+
+  const handleUpdateCategory = useCallback(
+    ({
+      catId,
+      value,
+      attr,
+    }: {
+      catId: string;
+      value: string;
+      attr: string;
+    }) => {
+      const updatedCategories = [...storeCategories].map((category) =>
+        category.categoryId === catId
+          ? { ...category, [attr]: value }
+          : category
+      );
+      dispatch(updateCategoriesAction(updatedCategories));
+    },
+    [storeCategories]
+  );
+
+  const handleDeleteCategory = useCallback(
+    ({ catId }: { catId: string }) => {
+      const updatedCategories = [...storeCategories].filter(
+        (category) => category.categoryId !== catId
+      );
+      dispatch(updateCategoriesAction(updatedCategories));
+    },
+    [storeCategories]
+  );
+
+  const handleAddNewField = useCallback(
+    ({ catId, fieldType }: { catId: string; fieldType: string }) => {
+      const updatedCategories = [...storeCategories].map((category) =>
+        category.categoryId === catId
+          ? {
+              ...category,
+              fields: [
+                ...category.fields,
+                {
+                  id: uuid(),
+                  attribute: '',
+                  attributeType: fieldType,
+                  attributeValue: undefined,
+                },
+              ],
+            }
+          : category
+      );
+      dispatch(updateCategoriesAction(updatedCategories));
+    },
+    [storeCategories]
+  );
+
+  const handleUpdateField = useCallback(
+    ({
+      catId,
+      fieldId,
+      value,
+      attr,
+      initField,
+      isNewType,
+    }: {
+      catId: string;
+      fieldId: string;
+      value: string;
+      attr: string;
+      initField?: boolean;
+      isNewType?: boolean;
+    }) => {
+      const updatedCategories = [...storeCategories].map((category) =>
+        category.categoryId === catId
+          ? {
+              ...category,
+              categoryTitleField: initField
+                ? value
+                : category.categoryTitleField,
+              fields: [...category.fields].map((field) =>
+                field.id === fieldId
+                  ? {
+                      ...field,
+                      [attr]: value,
+                      attributeValue: isNewType
+                        ? undefined
+                        : field.attributeValue,
+                    }
+                  : field
+              ),
+            }
+          : category
+      );
+      dispatch(updateCategoriesAction(updatedCategories));
+    },
+    [storeCategories]
+  );
+
+  const handleDeleteField = useCallback(
+    ({ catId, fieldId }: { catId: string; fieldId: string }) => {
+      const updatedCategories = [...storeCategories].map((category) =>
+        category.categoryId === catId
+          ? {
+              ...category,
+              fields: [...category.fields].filter(
+                (field) => field.id !== fieldId
+              ),
+            }
+          : category
+      );
+      dispatch(updateCategoriesAction(updatedCategories));
+    },
+    [storeCategories]
+  );
 
   return (
     <KeyboardAvoidingView
@@ -24,13 +155,7 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
       enabled
       style={Helpers.fill}
     >
-      <View
-        style={[
-          GlobalStyles.container,
-          GlobalStyles.layoutSection,
-          Helpers.fillCol,
-        ]}
-      >
+      <View style={[GlobalStyles.container, Helpers.fillCol]}>
         {!storeCategories?.length ? (
           <View style={Helpers.fillCenter}>
             <Text style={[Fonts.caption4, GlobalStyles.italic]}>
@@ -41,20 +166,40 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
           <ScrollView
             contentContainerStyle={[
               { flexGrow: 1, paddingTop: heightScale(25) },
+              GlobalStyles.layoutSection,
             ]}
             style={Helpers.fill}
+            ref={scrollViewRef}
+            onContentSizeChange={() => {
+              scrollViewRef.current?.scrollToEnd();
+            }}
             showsVerticalScrollIndicator={false}
           >
-            <Text style={GlobalStyles.title}>Manage Categories Screen</Text>
+            {storeCategories.map((category) => (
+              <View key={category.categoryId} style={Metrics.bottomMargin}>
+                <CategoryConfig
+                  category={category}
+                  handleUpdateCategory={handleUpdateCategory}
+                  handleDeleteCategory={handleDeleteCategory}
+                  handleAddNewField={handleAddNewField}
+                  handleUpdateField={handleUpdateField}
+                  handleDeleteField={handleDeleteField}
+                />
+              </View>
+            ))}
           </ScrollView>
         )}
-        <Button
-          label='Add New Category'
-          onPress={() => navigation.navigate('ManageCategories')}
-          buttonStyle={{
-            marginVertical: heightScale(25),
-          }}
-        />
+
+        <View style={GlobalStyles.layoutSection}>
+          <Button
+            label='Add New Category'
+            onPress={triggerAddNewCategory}
+            buttonStyle={{
+              marginTop: heightScale(15),
+              marginBottom: heightScale(25),
+            }}
+          />
+        </View>
       </View>
     </KeyboardAvoidingView>
   );

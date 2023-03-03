@@ -15,7 +15,7 @@ export const Colors = {
   transparent: 'rgba(0,0,0,0)',
   white: '#ffffff',
   black: '#000000',
-  primary: 'firebrick',
+  primary: '#5C1A8D',
   dark: '#343A40',
   darkGrey: '#7C7C7C',
   lightGrey: '#979797',
@@ -32,7 +32,7 @@ export const FontSize = {
   title: moderateScale(20),
   medium: moderateScale(18),
   regular: moderateScale(16),
-  small: moderateScale(15),
+  small: moderateScale(14),
   extra_small: moderateScale(12),
 };
 

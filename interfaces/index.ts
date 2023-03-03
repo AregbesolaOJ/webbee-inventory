@@ -1,18 +1,12 @@
+import { PropsWithChildren } from 'react';
 import { StyleProp, TextInputProps, ViewStyle } from 'react-native';
+import { categoryAttributesTypes, machineCategory } from '../utils';
 
-export type Category = {
-  id: number;
-  firstname: string;
-  lastname: string;
-  role: string;
-  telephone: string;
-  email: string;
-  email_verified: string;
-  [key: string]: unknown | object;
-};
-
-export interface IButtonProps {
+export type Category = typeof machineCategory;
+export interface IButtonProps extends PropsWithChildren {
   label: string;
+  attributeType?: string;
+  light?: boolean;
   onPress: () => void;
   disabled?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;
@@ -21,4 +15,14 @@ export interface ITextFieldProps extends TextInputProps {
   disabled?: boolean;
   label: string;
   inputStyle?: StyleProp<ViewStyle>;
+}
+
+export type MenuOption = typeof categoryAttributesTypes[number];
+
+export interface MenuPopupProps {
+  onSelect: (val: MenuOption | string) => void;
+  menuOptions: MenuOption[] | string[];
+  attributeType: string;
+  light?: boolean;
+  anchor: React.ElementType;
 }

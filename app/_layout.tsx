@@ -48,7 +48,7 @@ function RootLayoutNav() {
       <PersistGate persistor={persistor}>
         <PaperProvider>
           {/* Use a light status bar on iOS to account for the black space above the modal */}
-          <StatusBar style={isIos() ? 'light' : 'auto'} />
+          <StatusBar style={isIos() ? 'dark' : 'auto'} />
 
           <Stack>
             <Stack.Screen name='(drawer)' options={{ headerShown: false }} />
