@@ -20,6 +20,9 @@ import {
 import { triggerDeleteAction } from '../utils';
 import { SwitchAttribute } from './SwitchAttribute';
 import { TextField } from './TextField';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 
 type Props = {
   machine: MachineType;
@@ -53,7 +56,6 @@ export const CategoryMachines = ({
   );
 
   const renderFormFieldType = (value: any, key: string) => {
-    console.log({ key, value });
     if (['text', 'number'].includes(value.attributeType)) {
       return (
         <TextField
@@ -87,8 +89,23 @@ export const CategoryMachines = ({
         />
       );
     }
-    return null;
+    return (
+      <DateTimePicker
+        onChange={(evt: DateTimePickerEvent, date: Date | undefined) => {
+          handleUpdateMachine({
+            id,
+            value: date ? new Date(date) : null,
+            attr: key,
+          });
+        }}
+        style={{ width: '100%', marginRight: 'auto' }}
+        value={value.attributeValue || new Date()}
+        maximumDate={new Date(2030, 10, 20)}
+        minimumDate={new Date(1950, 0, 1)}
+      />
+    );
   };
+
   return (
     <Card
       style={[
@@ -101,21 +118,9 @@ export const CategoryMachines = ({
         {machineTitle}
       </Text>
       {fields.map(([key, value]) => {
-        console.log({ value });
         return (
           <View style={[Metrics.smallVerticalMargin]} key={key}>
             {renderFormFieldType(value, key)}
-            {/* <TextField
-              label={value.attribute || ''}
-              defaultValue={value.attributeValue || ''}
-              onChangeText={(val) => {
-                handleUpdateMachine({
-                  id,
-                  value: val,
-                  attr: key,
-                });
-              }}
-            /> */}
           </View>
         );
       })}
