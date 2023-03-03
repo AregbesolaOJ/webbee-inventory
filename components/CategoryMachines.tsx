@@ -50,7 +50,6 @@ export const CategoryMachines = ({
     [machine]
   );
 
-  console.log({ machine });
   return (
     <Card
       style={[
@@ -69,8 +68,6 @@ export const CategoryMachines = ({
               label={value.attribute || ''}
               defaultValue={value.attributeValue || ''}
               onChangeText={(val) => {
-                console.log({ value, titleField, key });
-
                 handleUpdateMachine({
                   id,
                   value: val,

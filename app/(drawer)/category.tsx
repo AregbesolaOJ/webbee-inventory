@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
-  Alert,
   KeyboardAvoidingView,
   ScrollView,
   Text,
@@ -19,32 +18,30 @@ import {
 } from '../../styles';
 import { CategoryMachines, CategoryHeader } from '../../components';
 import { updateCategoriesAction } from '../../reduxStore';
-import { MachineType } from '../../interfaces';
+import { Category as CategoryType, MachineType } from '../../interfaces';
 
-const Category = ({
+type ExtraProps = {
+  activeCategory?: CategoryType;
+};
+
+export const IndividualCategory = ({
   route,
   navigation,
+  activeCategory,
   ...props
-}: ScreenProps): JSX.Element => {
+}: ScreenProps & ExtraProps): JSX.Element => {
   const params = route?.params;
   const storeCategories = useAppSelector((state) => state.categories);
 
   const currentCategory = useMemo(() => {
-    return storeCategories.find(
-      (category) => category.categoryId === params?.categoryId
-    );
-  }, [storeCategories, params]);
+    return activeCategory !== undefined
+      ? activeCategory
+      : storeCategories.find(
+          (category) => category.categoryId === params?.categoryId
+        );
+  }, [storeCategories, activeCategory, params]);
 
   const scrollViewRef = useRef<ScrollView>(null);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => null,
-      headerTitle: currentCategory?.categoryName || 'Category',
-      headerTitleAlign: 'center',
-      ...props,
-    });
-  }, [currentCategory]);
 
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const dispatch = useAppDispatch();
@@ -53,15 +50,17 @@ const Category = ({
     const newMachine: MachineType = {
       id: uuid(),
     };
-    currentCategory?.fields.forEach((field) => {
-      const key = field.attribute.toLowerCase().split(' ').join('_');
-      newMachine[key] = {
-        attribute: field.attribute,
-        attributeType: field.attributeType,
-        attributeValue: '',
-      };
-      return field;
-    });
+    currentCategory?.fields
+      .filter((field) => String(field.attribute).length > 0)
+      .forEach((field) => {
+        const key = field.attribute.toLowerCase().split(' ').join('_');
+        newMachine[key] = {
+          attribute: field.attribute,
+          attributeType: field.attributeType,
+          attributeValue: '',
+        };
+        return field;
+      });
     const updatedCategories = [...storeCategories].map((category) =>
       category.categoryId === currentCategory?.categoryId
         ? {
@@ -75,7 +74,6 @@ const Category = ({
 
   const handleUpdateMachine = useCallback(
     ({ id, value, attr }: { id: string; value: string; attr: string }) => {
-      console.log({ id, value, attr });
       const updatedCategories = [...storeCategories].map((category) =>
         category.categoryId === currentCategory?.categoryId
           ? {
@@ -94,7 +92,7 @@ const Category = ({
             }
           : category
       );
-      // Alert.alert(JSON.stringify(updatedCategories));
+
       dispatch(updateCategoriesAction(updatedCategories));
     },
     [currentCategory, dispatch, storeCategories]
@@ -118,6 +116,78 @@ const Category = ({
   );
 
   return (
+    <>
+      <View style={GlobalStyles.layoutSection}>
+        <CategoryHeader
+          categoryName={`${currentCategory?.categoryName}`}
+          onPress={triggerAddNewMachine}
+        />
+      </View>
+
+      {!currentCategory?.machines?.length ? (
+        <View style={Helpers.fillCenter}>
+          <Text style={[Fonts.caption4, GlobalStyles.italic]}>
+            No Machines found for this Category!
+          </Text>
+        </View>
+      ) : (
+        <ScrollView
+          contentContainerStyle={[
+            { flexGrow: 1, paddingTop: heightScale(10), columnGap: 15 },
+            GlobalStyles.layoutSection,
+            Helpers.rowCross,
+            Helpers.mainSpaceBetween,
+            Helpers.wrap,
+          ]}
+          style={Helpers.fill}
+          ref={scrollViewRef}
+          onContentSizeChange={() => {
+            scrollViewRef.current?.scrollToEnd();
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          {currentCategory?.machines.map((machine) => (
+            <View
+              key={machine.id}
+              style={[
+                currentCategory?.machines.at(-1)?.id === machine.id
+                  ? Metrics.mediumBottomMargin
+                  : Metrics.bottomMargin,
+                {
+                  width: SCREEN_WIDTH > 720 ? '48%' : '100%',
+                },
+              ]}
+            >
+              <CategoryMachines
+                machine={machine}
+                titleField={currentCategory?.categoryTitleField}
+                handleUpdateMachine={handleUpdateMachine}
+                handleDeleteMachine={handleDeleteMachine}
+              />
+            </View>
+          ))}
+        </ScrollView>
+      )}
+    </>
+  );
+};
+
+const Category = ({ route, navigation }: ScreenProps): JSX.Element => {
+  const params = route?.params;
+  const storeCategories = useAppSelector((state) => state.categories);
+
+  useEffect(() => {
+    const routeCategory = storeCategories.find(
+      (store) => store.categoryId === params?.categoryId
+    );
+    navigation.setOptions({
+      headerRight: () => null,
+      headerTitle: routeCategory?.categoryName || 'Category',
+      headerTitleAlign: 'center',
+    });
+  }, [route]);
+
+  return (
     <KeyboardAvoidingView
       behavior={isIos() ? 'padding' : undefined}
       keyboardVerticalOffset={isIos() ? -5 : 0}
@@ -125,57 +195,7 @@ const Category = ({
       style={Helpers.fill}
     >
       <View style={[GlobalStyles.container, Helpers.fillCol]}>
-        <View style={GlobalStyles.layoutSection}>
-          <CategoryHeader
-            categoryName={`${currentCategory?.categoryName}`}
-            onPress={triggerAddNewMachine}
-          />
-        </View>
-
-        {!currentCategory?.machines?.length ? (
-          <View style={Helpers.fillCenter}>
-            <Text style={[Fonts.caption4, GlobalStyles.italic]}>
-              No Machines found for this Category!
-            </Text>
-          </View>
-        ) : (
-          <ScrollView
-            contentContainerStyle={[
-              { flexGrow: 1, paddingTop: heightScale(10), columnGap: 15 },
-              GlobalStyles.layoutSection,
-              Helpers.rowCross,
-              Helpers.mainSpaceBetween,
-              Helpers.wrap,
-            ]}
-            style={Helpers.fill}
-            ref={scrollViewRef}
-            onContentSizeChange={() => {
-              scrollViewRef.current?.scrollToEnd();
-            }}
-            showsVerticalScrollIndicator={false}
-          >
-            {currentCategory?.machines.map((machine) => (
-              <View
-                key={machine.id}
-                style={[
-                  currentCategory?.machines.at(-1)?.id === machine.id
-                    ? Metrics.mediumBottomMargin
-                    : Metrics.bottomMargin,
-                  {
-                    width: SCREEN_WIDTH > 720 ? '48%' : '100%',
-                  },
-                ]}
-              >
-                <CategoryMachines
-                  machine={machine}
-                  titleField={currentCategory?.categoryTitleField}
-                  handleUpdateMachine={handleUpdateMachine}
-                  handleDeleteMachine={handleDeleteMachine}
-                />
-              </View>
-            ))}
-          </ScrollView>
-        )}
+        <IndividualCategory navigation={navigation} route={route} />
       </View>
     </KeyboardAvoidingView>
   );
