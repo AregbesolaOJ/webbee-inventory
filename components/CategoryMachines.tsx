@@ -1,21 +1,24 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
-import { StyleSheet, Pressable, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Pressable,
+  DatePickerIOSComponent,
+  Text,
+  View,
+} from 'react-native';
 import { Card } from 'react-native-paper';
 import { Category, IButtonProps, MachineType } from '../interfaces';
 import {
   Colors,
   Fonts,
   GlobalStyles,
-  heightScale,
   Helpers,
   Metrics,
   moderateScale,
 } from '../styles';
 import { triggerDeleteAction } from '../utils';
-import { AttributeTypePicker } from './AttributeTypePicker';
-import { Button } from './Button';
-import { MenuPopup } from './MenuPopup';
+import { SwitchAttribute } from './SwitchAttribute';
 import { TextField } from './TextField';
 
 type Props = {
@@ -39,7 +42,6 @@ export const CategoryMachines = ({
   handleUpdateMachine,
   handleDeleteMachine,
 }: Props) => {
-  const [title, setTitle] = useState('');
   const { id, ...rest } = machine;
 
   const fields = Object.entries(rest);
@@ -50,6 +52,43 @@ export const CategoryMachines = ({
     [machine]
   );
 
+  const renderFormFieldType = (value: any, key: string) => {
+    console.log({ key, value });
+    if (['text', 'number'].includes(value.attributeType)) {
+      return (
+        <TextField
+          label={value.attribute || ''}
+          keyboardType={
+            value.attributeType === 'number' ? 'numeric' : 'default'
+          }
+          defaultValue={value.attributeValue || ''}
+          onChangeText={(val) => {
+            handleUpdateMachine({
+              id,
+              value: val,
+              attr: key,
+            });
+          }}
+        />
+      );
+    }
+    if (value.attributeType === 'checkbox') {
+      return (
+        <SwitchAttribute
+          title={value.attribute || ''}
+          value={value.attributeValue || false}
+          onValueChange={(val) => {
+            handleUpdateMachine({
+              id,
+              value: val,
+              attr: key,
+            });
+          }}
+        />
+      );
+    }
+    return null;
+  };
   return (
     <Card
       style={[
@@ -62,9 +101,11 @@ export const CategoryMachines = ({
         {machineTitle}
       </Text>
       {fields.map(([key, value]) => {
+        console.log({ value });
         return (
           <View style={[Metrics.smallVerticalMargin]} key={key}>
-            <TextField
+            {renderFormFieldType(value, key)}
+            {/* <TextField
               label={value.attribute || ''}
               defaultValue={value.attributeValue || ''}
               onChangeText={(val) => {
@@ -74,7 +115,7 @@ export const CategoryMachines = ({
                   attr: key,
                 });
               }}
-            />
+            /> */}
           </View>
         );
       })}

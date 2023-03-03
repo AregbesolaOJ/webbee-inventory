@@ -31,7 +31,7 @@ export type MachineType = {
   id: string;
   [x: string]:
     | {
-        attributeValue: string | undefined;
+        attributeValue: string | boolean | undefined;
         attributeType: string;
         attribute: string;
       }
