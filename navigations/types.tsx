@@ -23,7 +23,7 @@ export type RootStackParamList = {
   Profile: undefined;
   Dashboard: undefined;
   About: undefined;
-  Category: { id: string };
+  Category: { categoryId: string };
   NotFound: undefined;
   ManageCategories: undefined;
 };

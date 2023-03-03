@@ -21,8 +21,13 @@ export const categoryAttributesTypes = [
 export const machineCategory = {
   categoryId: '',
   categoryName: '',
-  fields: [
-    { id: '', attribute: '', attributeType: '', attributeValue: undefined },
+  fields: [{ id: '', attribute: '', attributeType: '', attributeValue: '' }],
+  machines: [
+    {
+      id: '',
+      // title: '',  to rely on the value of 'categoryTitleField' from the parent otherwise 'unnamed field'
+      //   ...attribute: { name: '', type: '' } => fields.forEach
+    },
   ],
   categoryTitleField: '', // to be pulled from fields otherwise 'unnamed field'
 };

@@ -65,7 +65,6 @@ const CustomDrawerContent = ({ navigation, selectedTab }: Props) => {
           <View style={[Metrics.topMargin, { width: '100%' }]}>
             <CustomDrawerItem
               label={'Dashboard'}
-              isFocused={selectedTab.includes('Dashboard')}
               onPress={() => navigation.navigate('Dashboard')}
               icon='home'
             />
@@ -73,7 +72,6 @@ const CustomDrawerContent = ({ navigation, selectedTab }: Props) => {
               <CustomDrawerItem
                 key={categoryId}
                 label={categoryName}
-                isFocused={selectedTab.includes('Category')}
                 onPress={() => navigation.navigate('Category', { categoryId })}
                 icon='link'
               />
@@ -81,7 +79,6 @@ const CustomDrawerContent = ({ navigation, selectedTab }: Props) => {
 
             <CustomDrawerItem
               label={'Manage Categories'}
-              isFocused={selectedTab.includes('ManageCategories')}
               onPress={() => navigation.navigate('ManageCategories')}
               icon='user-secret'
             />
@@ -95,7 +92,7 @@ const CustomDrawerContent = ({ navigation, selectedTab }: Props) => {
 const CustomDrawer = () => (
   <View style={GlobalStyles.container}>
     <Drawer.Navigator
-      initialRouteName='Dashboard'
+      // initialRouteName='Dashboard'
       // eslint-disable-next-line react/no-unstable-nested-components
       drawerContent={({ state, navigation }) => {
         const _selected = getCurrentRouteKey(state?.history, state.index);
@@ -112,20 +109,6 @@ const CustomDrawer = () => (
         name='Dashboard'
         options={{
           title: 'Dashboard',
-          headerRight: () => (
-            <Link href='/modal' asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name='info-circle'
-                    size={25}
-                    color={Colors.dark}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
         }}
       >
         {(props) => <Dashboard {...props} />}

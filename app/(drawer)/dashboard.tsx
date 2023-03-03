@@ -1,13 +1,5 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, ScrollView, Text, View } from 'react-native';
 import { Button } from '../../components/Button';
-
 import { ScreenProps } from '../../navigations/types';
 import { useAppSelector } from '../../reduxStore/hooks';
 import { isIos } from '../../utils';
@@ -19,7 +11,19 @@ import {
   widthScale,
 } from '../../styles';
 
-const Dashboard = ({ navigation, ...props }: ScreenProps): JSX.Element => {
+import { IndividualCategory } from './category';
+import { Category } from '../../interfaces';
+import React from 'react';
+
+type ExtraProps = {
+  activeCategory?: Category;
+};
+
+const Dashboard = ({
+  navigation,
+  route,
+  ...props
+}: ScreenProps & ExtraProps): JSX.Element => {
   const storeCategories = useAppSelector((state) => state.categories);
 
   return (
@@ -43,8 +47,20 @@ const Dashboard = ({ navigation, ...props }: ScreenProps): JSX.Element => {
             />
           </View>
         ) : (
-          <ScrollView contentContainerStyle={GlobalStyles.layout}>
-            <Text style={GlobalStyles.title}>Dashboard Screen</Text>
+          <ScrollView
+            style={[GlobalStyles.container, Helpers.fillCol]}
+            showsVerticalScrollIndicator={false}
+          >
+            {storeCategories.map((category) => (
+              <React.Fragment key={category.categoryId}>
+                <IndividualCategory
+                  navigation={navigation}
+                  route={route}
+                  activeCategory={category}
+                />
+                <View style={Metrics.mediumBottomMargin} />
+              </React.Fragment>
+            ))}
           </ScrollView>
         )}
       </View>
@@ -53,11 +69,3 @@ const Dashboard = ({ navigation, ...props }: ScreenProps): JSX.Element => {
 };
 
 export default Dashboard;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

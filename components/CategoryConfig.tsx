@@ -35,7 +35,7 @@ type Props = {
     value,
     attr,
     initField,
-    isNewType
+    isNewType,
   }: {
     catId: string;
     fieldId: string;
@@ -69,7 +69,9 @@ export const CategoryConfig = ({
   handleAddNewField,
 }: Props) => {
   const { categoryId, categoryName, fields, categoryTitleField } = category;
-  const allFieldNames = fields.map(({ attribute }) => attribute);
+  const allFieldNames = fields
+    .filter(({ attribute }) => String(attribute).length > 0)
+    .map(({ attribute }) => attribute);
 
   return (
     <Card
@@ -106,7 +108,6 @@ export const CategoryConfig = ({
               accessibilityLabel='Attribute text field'
               value={field.attribute}
               onChangeText={(val) => {
-                console.log({ len: fields.length });
                 handleUpdateField({
                   value: val,
                   fieldId: field.id,
@@ -129,7 +130,7 @@ export const CategoryConfig = ({
                   fieldId: field.id,
                   attr: 'attributeType',
                   catId: categoryId,
-                  isNewType: true
+                  isNewType: true,
                 })
               }
             />

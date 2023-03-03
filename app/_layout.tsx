@@ -52,7 +52,6 @@ function RootLayoutNav() {
 
           <Stack>
             <Stack.Screen name='(drawer)' options={{ headerShown: false }} />
-            <Stack.Screen name='modal' options={{ presentation: 'modal' }} />
           </Stack>
         </PaperProvider>
       </PersistGate>

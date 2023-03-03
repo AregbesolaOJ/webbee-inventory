@@ -19,6 +19,7 @@ import {
 } from '../../styles';
 import { CategoryConfig } from '../../components';
 import { addCategoryAction, updateCategoriesAction } from '../../reduxStore';
+import { Category } from '../../interfaces';
 
 const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
   const storeCategories = useAppSelector((state) => state.categories);
@@ -28,7 +29,7 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const dispatch = useAppDispatch();
   const triggerAddNewCategory = useCallback(() => {
-    const newCategory = {
+    const newCategory: Category = {
       ...machineCategory,
     };
     newCategory.categoryId = uuid();
@@ -79,7 +80,7 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
                   id: uuid(),
                   attribute: '',
                   attributeType: fieldType,
-                  attributeValue: undefined,
+                  attributeValue: '',
                 },
               ],
             }
@@ -118,9 +119,7 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
                   ? {
                       ...field,
                       [attr]: value,
-                      attributeValue: isNewType
-                        ? undefined
-                        : field.attributeValue,
+                      attributeValue: isNewType ? '' : field.attributeValue,
                     }
                   : field
               ),
