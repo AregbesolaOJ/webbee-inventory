@@ -26,3 +26,14 @@ export interface MenuPopupProps {
   light?: boolean;
   anchor: React.ElementType;
 }
+
+export type MachineType = {
+  id: string;
+  [x: string]:
+    | {
+        attributeValue: string | undefined;
+        attributeType: string;
+        attribute: string;
+      }
+    | string;
+};
