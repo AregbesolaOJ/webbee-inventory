@@ -1,17 +1,54 @@
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { Button } from '../../components/Button';
 
-import EditScreenInfo from '../../components/EditScreenInfo';
+import { ScreenProps } from '../../navigations/types';
+import { useAppSelector } from '../../reduxStore/hooks';
+import { isIos } from '../../utils';
+import {
+  GlobalStyles,
+  heightScale,
+  Helpers,
+  Metrics,
+  widthScale,
+} from '../../styles';
 
-const Dashboard = ({ ...props }): JSX.Element => {
+const Dashboard = ({ navigation, ...props }: ScreenProps): JSX.Element => {
+  const storeCategories = useAppSelector((state) => state.categories);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Dashboard Screen</Text>
-      <View style={styles.separator} />
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-    </View>
+    <KeyboardAvoidingView
+      behavior={isIos() ? 'padding' : undefined}
+      keyboardVerticalOffset={isIos() ? -5 : 0}
+      enabled
+      style={Helpers.fill}
+    >
+      <View style={GlobalStyles.container}>
+        {!storeCategories?.length ? (
+          <View style={Helpers.fillCenter}>
+            <Text style={GlobalStyles.text}>No Categories created yet!</Text>
+            <Button
+              label='Create Category'
+              onPress={() => navigation.navigate('ManageCategories')}
+              buttonStyle={{
+                maxWidth: widthScale(200),
+                marginVertical: heightScale(15),
+              }}
+            />
+          </View>
+        ) : (
+          <ScrollView contentContainerStyle={GlobalStyles.layout}>
+            <Text style={GlobalStyles.title}>Dashboard Screen</Text>
+          </ScrollView>
+        )}
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -22,14 +59,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
 });

@@ -10,6 +10,7 @@ interface Props {
   onPress?: () => void;
   icon: string;
 }
+
 export const CustomDrawerItem = ({
   label,
   isFocused,
@@ -26,7 +27,7 @@ export const CustomDrawerItem = ({
       <FontAwesome5
         name={icon}
         color={isFocused ? Colors.primary : Colors.darkGrey}
-        size={22}
+        size={14}
       />
       <Text
         style={[

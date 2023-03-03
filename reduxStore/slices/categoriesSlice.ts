@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Category } from '../../interfaces';
-import type { RootState } from '../appStore';
 
 type CategoriesState = Category[];
 
@@ -9,12 +8,16 @@ export const categoriesSlice = createSlice({
   name: 'categories',
   initialState: [] as CategoriesState,
   reducers: {
-    updateCategory: (state) => [...state],
+    addCategoryAction: (state, action: PayloadAction<Category>) => [
+      ...state,
+      action.payload,
+    ],
+    updateCategoriesAction: (state, action: PayloadAction<Category[]>) => [
+      ...action.payload,
+    ],
   },
 });
 
-export const { updateCategory } = categoriesSlice.actions;
-
-export const selectcategories = (state: RootState) => state.categories;
+export const { updateCategoriesAction, addCategoryAction } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

@@ -1,40 +1,65 @@
-import { StyleSheet, View, Pressable, Text } from 'react-native';
+import { StyleSheet, Pressable, Text } from 'react-native';
+import { IButtonProps } from '../interfaces';
+import {
+  Colors,
+  heightScale,
+  Helpers,
+  Metrics,
+  moderateScale,
+} from '../styles';
 
-export default function Button({ label }: { label: string }) {
+export const Button = ({
+  label,
+  onPress,
+  disabled,
+  light,
+  attributeType,
+  buttonStyle,
+  children,
+}: IButtonProps) => {
+  const buttonColor = light ? { color: Colors.primary } : { color: '#fff' };
+  const bgColor = light
+    ? {
+        backgroundColor: Colors.white,
+        borderColor: Colors.primary,
+        borderWidth: 1,
+      }
+    : { backgroundColor: Colors.primary };
   return (
-    <View style={styles.buttonContainer}>
-      <Pressable
-        style={styles.button}
-        onPress={() => alert('You pressed a button.')}
-      >
-        <Text style={styles.buttonLabel}>{label}</Text>
-      </Pressable>
-    </View>
+    <Pressable
+      style={[
+        styles.button,
+        Metrics.horizontalPadding,
+        Helpers.center,
+        bgColor,
+        buttonStyle,
+      ]}
+      onPress={onPress}
+      disabled={disabled}
+    >
+      {children ? (
+        <>{children}</>
+      ) : (
+        <Text style={[styles.buttonLabel, buttonColor]}>
+          {label || attributeType}
+        </Text>
+      )}
+    </Pressable>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    width: 320,
-    height: 68,
-    marginHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 3,
-  },
   button: {
-    borderRadius: 10,
+    borderRadius: 8,
+    height: heightScale(45),
     width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
   buttonIcon: {
     paddingRight: 8,
   },
   buttonLabel: {
-    color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(14),
+    fontWeight: '600',
+    textTransform: 'uppercase',
   },
 });

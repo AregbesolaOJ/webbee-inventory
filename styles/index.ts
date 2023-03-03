@@ -8,14 +8,14 @@ const guidelineBaseHeight = 812;
 export const widthScale = (size: number) => (width / guidelineBaseWidth) * size;
 export const heightScale = (size: number) =>
   (height / guidelineBaseHeight) * size;
-export const moderateScale = (size: number, factor: number = 0.5) =>
+export const moderateScale = (size: number, factor: number = 0.25) =>
   size + (widthScale(size) - size) * factor;
 
 export const Colors = {
   transparent: 'rgba(0,0,0,0)',
   white: '#ffffff',
   black: '#000000',
-  primary: 'firebrick',
+  primary: '#5C1A8D',
   dark: '#343A40',
   darkGrey: '#7C7C7C',
   lightGrey: '#979797',
@@ -32,7 +32,7 @@ export const FontSize = {
   title: moderateScale(20),
   medium: moderateScale(18),
   regular: moderateScale(16),
-  small: moderateScale(15),
+  small: moderateScale(14),
   extra_small: moderateScale(12),
 };
 
@@ -121,7 +121,7 @@ export const GlobalStyles = StyleSheet.create({
     color: Colors.darkGrey,
   },
   text: {
-    fontSize: FontSize.medium,
+    fontSize: FontSize.regular,
     color: Colors.dark,
   },
 });
@@ -236,3 +236,176 @@ export const Metrics = {
     paddingVertical: heightScale(medium),
   },
 };
+
+export const Helpers = StyleSheet.create({
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  colCenter: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  colCross: {
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  colMain: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  column: {
+    flexDirection: 'column',
+  },
+  columnReverse: {
+    flexDirection: 'column-reverse',
+  },
+  crossCenter: {
+    alignItems: 'center',
+  },
+  crossEnd: {
+    alignItems: 'flex-end',
+  },
+  crossStart: {
+    alignItems: 'flex-start',
+  },
+  crossStretch: {
+    alignItems: 'stretch',
+  },
+  fill: {
+    flex: 1,
+  },
+  fillCenter: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  fillCol: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  fillColCenter: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  fillColCross: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
+  },
+  fillColMain: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  fillColReverse: {
+    flex: 1,
+    flexDirection: 'column-reverse',
+  },
+  fillRow: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  fillRowCenter: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  fillRowCross: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+  },
+  fillRowMain: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  fillRowReverse: {
+    flex: 1,
+    flexDirection: 'row-reverse',
+  },
+  fullSize: {
+    height: '100%',
+    width: '100%',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  wrap: {
+    flexWrap: 'wrap',
+  },
+  mainCenter: {
+    justifyContent: 'center',
+  },
+  mainEnd: {
+    justifyContent: 'flex-end',
+  },
+  mainSpaceAround: {
+    justifyContent: 'space-around',
+  },
+  mainSpaceBetween: {
+    justifyContent: 'space-between',
+  },
+  mainStart: {
+    justifyContent: 'flex-start',
+  },
+  mirror: {
+    transform: [{ scaleX: -1 }],
+  },
+  rotate90: {
+    transform: [{ rotate: '90deg' }],
+  },
+  rotate90Inverse: {
+    transform: [{ rotate: '-90deg' }],
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  rowCenter: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  rowCross: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  rowMain: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  rowReverse: {
+    flexDirection: 'row-reverse',
+  },
+  scrollSpaceAround: {
+    flexGrow: 1,
+    justifyContent: 'space-around',
+  },
+  scrollSpaceBetween: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+  },
+  selfStretch: {
+    alignSelf: 'stretch',
+  },
+  selfCenter: {
+    alignSelf: 'center',
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  textJustify: {
+    textAlign: 'justify',
+  },
+  textLeft: {
+    textAlign: 'left',
+  },
+  textRight: {
+    textAlign: 'right',
+  },
+});
