@@ -2,7 +2,18 @@ import { PropsWithChildren } from 'react';
 import { StyleProp, TextInputProps, ViewStyle } from 'react-native';
 import { categoryAttributesTypes, machineCategory } from '../utils';
 
-export type Category = typeof machineCategory;
+export type Category = {
+  categoryId: string;
+  categoryName: string;
+  fields: {
+    id: string;
+    attribute: string;
+    attributeType: string;
+    attributeValue: string;
+  }[];
+  machines: MachineType[];
+  categoryTitleField: string;
+};
 export interface IButtonProps extends PropsWithChildren {
   label: string;
   attributeType?: string;
@@ -31,7 +42,7 @@ export type MachineType = {
   id: string;
   [x: string]:
     | {
-        attributeValue: string | boolean | undefined;
+        attributeValue: string | Date | boolean | undefined;
         attributeType: string;
         attribute: string;
       }
