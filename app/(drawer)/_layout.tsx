@@ -16,6 +16,7 @@ import Category from './category';
 import ManageCategories from './manage-categories';
 import Dashboard from './dashboard';
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
+import { useAppSelector } from '../../reduxStore/hooks';
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
 
@@ -25,7 +26,7 @@ type Props = {
 };
 
 const CustomDrawerContent = ({ navigation, selectedTab }: Props) => {
-  const nav = useNavigation();
+  const storeCategories = useAppSelector((state) => state.categories);
 
   return (
     <DrawerContentScrollView scrollEnabled contentContainerStyle={{ flex: 1 }}>
@@ -68,25 +69,21 @@ const CustomDrawerContent = ({ navigation, selectedTab }: Props) => {
               onPress={() => navigation.navigate('Dashboard')}
               icon='home'
             />
-            <CustomDrawerItem
-              label={'Category'}
-              isFocused={selectedTab.includes('Category')}
-              onPress={() => navigation.navigate('Category', { categoryId: 2 })}
-              icon='link'
-            />
-
-            <CustomDrawerItem
-              label={'Category'}
-              isFocused={selectedTab.includes('Category')}
-              onPress={() => navigation.navigate('Category', { categoryId: 3 })}
-              icon='link'
-            />
+            {storeCategories.map(({ categoryId, categoryName }) => (
+              <CustomDrawerItem
+                key={categoryId}
+                label={categoryName}
+                isFocused={selectedTab.includes('Category')}
+                onPress={() => navigation.navigate('Category', { categoryId })}
+                icon='link'
+              />
+            ))}
 
             <CustomDrawerItem
               label={'Manage Categories'}
               isFocused={selectedTab.includes('ManageCategories')}
               onPress={() => navigation.navigate('ManageCategories')}
-              icon='link'
+              icon='user-secret'
             />
           </View>
         </View>

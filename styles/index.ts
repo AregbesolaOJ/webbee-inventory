@@ -8,7 +8,7 @@ const guidelineBaseHeight = 812;
 export const widthScale = (size: number) => (width / guidelineBaseWidth) * size;
 export const heightScale = (size: number) =>
   (height / guidelineBaseHeight) * size;
-export const moderateScale = (size: number, factor: number = 0.5) =>
+export const moderateScale = (size: number, factor: number = 0.25) =>
   size + (widthScale(size) - size) * factor;
 
 export const Colors = {

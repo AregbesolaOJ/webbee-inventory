@@ -1,10 +1,9 @@
 import { useCallback, useRef } from 'react';
 import {
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
-  StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { Button } from '../../components/Button';
@@ -26,6 +25,7 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
 
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
   const dispatch = useAppDispatch();
   const triggerAddNewCategory = useCallback(() => {
     const newCategory = {
@@ -33,6 +33,7 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
     };
     newCategory.categoryId = uuid();
     newCategory.fields[0].id = uuid();
+    newCategory.fields[0].attributeType = 'text';
     dispatch(addCategoryAction(newCategory));
   }, [dispatch, machineCategory]);
 
@@ -165,8 +166,11 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
         ) : (
           <ScrollView
             contentContainerStyle={[
-              { flexGrow: 1, paddingTop: heightScale(25) },
+              { flexGrow: 1, paddingTop: heightScale(25), columnGap: 15 },
               GlobalStyles.layoutSection,
+              Helpers.rowCross,
+              Helpers.mainSpaceBetween,
+              Helpers.wrap,
             ]}
             style={Helpers.fill}
             ref={scrollViewRef}
@@ -175,8 +179,18 @@ const ManageCategories = ({ navigation }: ScreenProps): JSX.Element => {
             }}
             showsVerticalScrollIndicator={false}
           >
-            {storeCategories.map((category) => (
-              <View key={category.categoryId} style={Metrics.bottomMargin}>
+            {storeCategories.map((category, index) => (
+              <View
+                key={category.categoryId}
+                style={[
+                  storeCategories.at(-1)?.categoryId === category.categoryId
+                    ? Metrics.mediumBottomMargin
+                    : Metrics.bottomMargin,
+                  {
+                    width: SCREEN_WIDTH > 720 ? '48%' : '100%',
+                  },
+                ]}
+              >
                 <CategoryConfig
                   category={category}
                   handleUpdateCategory={handleUpdateCategory}
